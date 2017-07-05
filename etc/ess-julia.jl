@@ -50,10 +50,11 @@ function fun_args(f::Function)
     print("))")
 end
 
-function fun_args(s::ASCIIString)
+
+function fun_args(s::String)
     try
         m = eval(current_module(), parse(s))
-        if typeof(m) != ASCIIString
+        if typeof(m) != String
             fun_args(m)
         end
     catch
