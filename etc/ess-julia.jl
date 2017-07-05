@@ -26,7 +26,10 @@ function fun_args(m::Method)
     print(io, ")")
 end 
 
-VERSION >= v"0.4-" && (Base.function_module(f::Function)=f.env.module)
+if VERSION >= v"0.4-" && VERSION < v"0.5"
+    import Base.function_module
+    Base.function_module(f::Function) = f.env.module
+end
 
 ## modified versionof show(io::IO, mt::MethodTable)
 function fun_args(f::Function)
