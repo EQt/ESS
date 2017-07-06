@@ -50,7 +50,6 @@ function fun_args(f::Function)
     print("))")
 end
 
-
 function fun_args(s::String)
     try
         m = eval(current_module(), parse(s))
@@ -70,7 +69,7 @@ function fun_args(t::DataType)
     print("))")
 end 
 
-
+
 ### OBJECT COMPLETION
 # Must print an output of the form:
 # 
@@ -100,7 +99,7 @@ function components(v)
     end
 end
 
-
+
 ### MISC
 function main_modules(m::Module)
     for nm in names(m)
