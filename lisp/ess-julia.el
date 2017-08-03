@@ -119,8 +119,11 @@ VISIBLY is not currently used."
 
 ;;; COMPLETION
 (defun ess-julia-latexsub-completion ()
-  "Return completions for latex input in a format required by `completion-at-point-functions'."
-  #'julia-latexsub)
+  "Complete latex input, and returns in a format required by `completion-at-point-functions'."
+  (if (julia-latexsub) ; julia-latexsub returns nil if it performed a completion, the point otherwise
+      nil
+    (lambda () t) ;; bypass other completion methods
+    ))
 
 (defun ess-julia-object-completion ()
   "Return completions at point in a format required by `completion-at-point-functions'. "
@@ -262,7 +265,7 @@ to look up any doc strings."
              (ess-process-live-p)
              (not (ess-process-get 'busy)))
     (let ((funname (or (and ess-eldoc-show-on-symbol ;; aggressive completion
-                            (ess-symbol-at-point))
+                            (symbol-name (ess-symbol-at-point)))
                        (car (ess--funname.start)))))
       (when funname
         (let* ((args (copy-sequence (nth 2 (ess-function-arguments funname))))
@@ -276,8 +279,8 @@ to look up any doc strings."
               (setq doc (concat doc "  "
                                 (pop args))))
             (when (and args (< (length doc) W))
-              (setq doc (concat doc " {--}"))))
-          doc)))))
+              (setq doc (concat doc " {--}")))
+            doc))))))
 
 
 ;;; IMENU

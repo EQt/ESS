@@ -18,11 +18,8 @@ function fun_args(m::Method)
     if !isempty(tv)
         Base.show_delim_array(io, tv, '{', ',', '}', false)
     end
-    li = m.func.code
-    e = Base.uncompressed_ast(li)
-    argnames = e.args[1]
     print(io, "(")
-    print_joined(io, [escape_string(isempty(d[2]) ? d[1] : d[1]*"::"*d[2]) for d in decls], ",", ",")    
+    join(io, [escape_string(isempty(d[2]) ? d[1] : d[1]*"::"*d[2]) for d in decls], ",", ",")    
     print(io, ")")
 end 
 
@@ -33,22 +30,21 @@ end
 
 ## modified versionof show(io::IO, mt::MethodTable)
 function fun_args(f::Function)
-    mt = f.env
+    mt = Base.MethodList(methods(f).mt)
     mod = Base.function_module(f)
     if mod == Main
         mod = "nil"
     end 
     print("(list \"$mod\" nil '(")
-    d = mt.defs
-    while d != nothing && d != ()
+    for d in mt
         print("\"")
         ## method
         fun_args(d)
         print("\" ")
-        d = d.next
     end
     print("))")
 end
+
 
 function fun_args(s::String)
     try
